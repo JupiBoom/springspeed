@@ -527,5 +527,11 @@ public class WxPayController implements WxPayService {
     public void setConfig(WxPayConfig config) {
 
     }
+
+    @Override
+    public Object getTransferService() {
+        //do nothing
+        return null;
+    }
 }
 
