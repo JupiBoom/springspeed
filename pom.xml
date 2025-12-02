@@ -11,6 +11,8 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <swagger.version>2.8.0</swagger.version>
         <lucene.version>4.0.0</lucene.version>
         <baidu.version>4.6.1</baidu.version>
@@ -24,6 +26,9 @@
         <joda.time.version>2.9.9</joda.time.version>
         <shiro.version>1.3.2</shiro.version>
         <jwt.version>0.7.0</jwt.version>
+        <spring-data-redis.version>1.8.9.RELEASE</spring-data-redis.version>
+        <spring-data-elasticsearch.version>3.0.4.RELEASE</spring-data-elasticsearch.version>
+        <elasticsearch.version>5.6.10</elasticsearch.version>
     </properties>
 
     <!-- Inherit defaults from Spring Boot -->
@@ -116,27 +121,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!--MyBatis 及 插件依赖-->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.4.5</version>
-        </dependency>
-        <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper</artifactId>
-            <version>3.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
-            <version>4.2.1</version>
-        </dependency>
+        <!--Spring Data JPA依赖-->        <dependency>            <groupId>org.springframework.boot</groupId>            <artifactId>spring-boot-starter-data-jpa</artifactId>        </dependency>        <!--Redis依赖-->        <dependency>            <groupId>org.springframework.boot</groupId>            <artifactId>spring-boot-starter-data-redis</artifactId>        </dependency>        <!--Elasticsearch依赖-->        <dependency>            <groupId>org.springframework.boot</groupId>            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>            <exclusions>                <exclusion>                    <groupId>org.elasticsearch</groupId>                    <artifactId>elasticsearch</artifactId>                </exclusion>            </exclusions>        </dependency>        <dependency>            <groupId>org.elasticsearch</groupId>            <artifactId>elasticsearch</artifactId>            <version>${elasticsearch.version}</version>        </dependency>        <!--Quartz定时任务依赖-->        <dependency>            <groupId>org.quartz-scheduler</groupId>            <artifactId>quartz</artifactId>            <version>2.2.3</version>        </dependency>        <dependency>            <groupId>org.springframework</groupId>            <artifactId>spring-context-support</artifactId>        </dependency>        <!--Redis连接池-->        <dependency>            <groupId>org.apache.commons</groupId>            <artifactId>commons-pool2</artifactId>        </dependency>
         <!--阿里 FastJson依赖-->
         <dependency>
             <groupId>com.alibaba</groupId>
