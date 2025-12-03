@@ -197,6 +197,22 @@
             <artifactId>weixin-java-pay</artifactId>
             <version>${weixin.version}</version>
         </dependency>
+        <!--Redis依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--Spring StateMachine依赖-->
+        <dependency>
+            <groupId>org.springframework.statemachine</groupId>
+            <artifactId>spring-statemachine-core</artifactId>
+            <version>1.2.10.RELEASE</version>
+        </dependency>
+        <!--定时任务依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
         <!--验证码生成工具-->
         <dependency>
             <groupId>com.github.axet</groupId>
