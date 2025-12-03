@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.payment.dao.SettlementRecordMapper">
+    
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.payment.model.SettlementRecord">
+        <id column="id" property="id"/>
+        <result column="settlement_no" property="settlementNo"/>
+        <result column="merchant_id" property="merchantId"/>
+        <result column="settlement_date" property="settlementDate"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="fee_amount" property="feeAmount"/>
+        <result column="actual_amount" property="actualAmount"/>
+        <result column="transaction_count" property="transactionCount"/>
+        <result column="status" property="status"/>
+        <result column="settlement_time" property="settlementTime"/>
+        <result column="bank_transaction_no" property="bankTransactionNo"/>
+        <result column="fail_reason" property="failReason"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, settlement_no, merchant_id, settlement_date, total_amount, 
+        fee_amount, actual_amount, transaction_count, status, settlement_time, 
+        bank_transaction_no, fail_reason, create_time, update_time
+    </sql>
+    
+    <select id="selectBySettlementNo" parameterType="String" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM settlement_record
+        WHERE settlement_no = #{settlementNo}
+    </select>
+    
+    <select id="selectByMerchantIdAndStatus" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM settlement_record
+        WHERE merchant_id = #{merchantId}
+        AND status = #{status}
+        ORDER BY settlement_date DESC
+    </select>
+    
+    <select id="selectPendingSettlements" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM settlement_record
+        WHERE status = 0
+        ORDER BY settlement_date ASC
+    </select>
+    
+    <update id="updateSettlementStatus">
+        UPDATE settlement_record
+        SET status = #{status},
+            settlement_time = #{settlementTime},
+            bank_transaction_no = #{bankTransactionNo},
+            fail_reason = #{failReason},
+            update_time = NOW()
+        WHERE settlement_no = #{settlementNo}
+    </update>
+    
+    <select id="selectListByMerchantId" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM settlement_record
+        WHERE merchant_id = #{merchantId}
+        ORDER BY settlement_date DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <insert id="insert" parameterType="com.yasinyuan.testspring.payment.model.SettlementRecord">
+        INSERT INTO settlement_record (
+            settlement_no, merchant_id, settlement_date, total_amount, 
+            fee_amount, actual_amount, transaction_count, status, create_time, update_time
+        ) VALUES (
+            #{settlementNo}, #{merchantId}, #{settlementDate}, #{totalAmount}, 
+            #{feeAmount}, #{actualAmount}, #{transactionCount}, #{status}, NOW(), NOW()
+        )
+    </insert>
+    
+    <update id="updateByPrimaryKey" parameterType="com.yasinyuan.testspring.payment.model.SettlementRecord">
+        UPDATE settlement_record
+        SET settlement_no = #{settlementNo},
+            merchant_id = #{merchantId},
+            settlement_date = #{settlementDate},
+            total_amount = #{totalAmount},
+            fee_amount = #{feeAmount},
+            actual_amount = #{actualAmount},
+            transaction_count = #{transactionCount},
+            status = #{status},
+            settlement_time = #{settlementTime},
+            bank_transaction_no = #{bankTransactionNo},
+            fail_reason = #{failReason},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteByPrimaryKey" parameterType="Long">
+        DELETE FROM settlement_record WHERE id = #{id}
+    </delete>
+    
+    <select id="selectByPrimaryKey" parameterType="Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM settlement_record
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM settlement_record
+        ORDER BY create_time DESC
+    </select>
+</mapper>
