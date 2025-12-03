@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.payment.dao.PaymentTransactionMapper">
+    
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.payment.model.PaymentTransaction">
+        <id column="id" property="id"/>
+        <result column="payment_no" property="paymentNo"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="amount" property="amount"/>
+        <result column="channel" property="channel"/>
+        <result column="status" property="status"/>
+        <result column="channel_transaction_no" property="channelTransactionNo"/>
+        <result column="description" property="description"/>
+        <result column="attach" property="attach"/>
+        <result column="timeout_time" property="timeoutTime"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, payment_no, order_no, amount, channel, status, channel_transaction_no, 
+        description, attach, timeout_time, pay_time, create_time, update_time
+    </sql>
+    
+    <select id="selectByPaymentNo" parameterType="String" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM payment_transaction
+        WHERE payment_no = #{paymentNo}
+    </select>
+    
+    <select id="selectByOrderNo" parameterType="String" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM payment_transaction
+        WHERE order_no = #{orderNo}
+    </select>
+    
+    <select id="selectTimeoutOrders" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM payment_transaction
+        WHERE status = 'PENDING' AND timeout_time < NOW()
+    </select>
+    
+    <update id="updatePaymentStatus">
+        UPDATE payment_transaction
+        SET status = #{status},
+            channel_transaction_no = #{channelTransactionNo},
+            pay_time = #{payTime},
+            update_time = NOW()
+        WHERE payment_no = #{paymentNo}
+    </update>
+    
+    <select id="selectStatistics" resultType="com.yasinyuan.testspring.payment.model.PaymentTransaction">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM payment_transaction
+        WHERE 1 = 1
+        <if test="merchantId != null">
+            AND merchant_id = #{merchantId}
+        </if>
+        <if test="startTime != null">
+            AND create_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND create_time <= #{endTime}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+    
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM payment_transaction
+        WHERE 1 = 1
+        <if test="orderNo != null">
+            AND order_no = #{orderNo}
+        </if>
+        <if test="startTime != null">
+            AND create_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND create_time <= #{endTime}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <insert id="insert" parameterType="com.yasinyuan.testspring.payment.model.PaymentTransaction">
+        INSERT INTO payment_transaction (
+            payment_no, order_no, amount, channel, status, 
+            description, attach, timeout_time, create_time, update_time
+        ) VALUES (
+            #{paymentNo}, #{orderNo}, #{amount}, #{channel}, #{status}, 
+            #{description}, #{attach}, #{timeoutTime}, NOW(), NOW()
+        )
+    </insert>
+    
+    <update id="updateByPrimaryKey" parameterType="com.yasinyuan.testspring.payment.model.PaymentTransaction">
+        UPDATE payment_transaction
+        SET order_no = #{orderNo},
+            amount = #{amount},
+            channel = #{channel},
+            status = #{status},
+            channel_transaction_no = #{channelTransactionNo},
+            description = #{description},
+            attach = #{attach},
+            timeout_time = #{timeoutTime},
+            pay_time = #{payTime},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteByPrimaryKey" parameterType="Long">
+        DELETE FROM payment_transaction WHERE id = #{id}
+    </delete>
+    
+    <select id="selectByPrimaryKey" parameterType="Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM payment_transaction
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM payment_transaction
+        ORDER BY create_time DESC
+    </select>
+</mapper>

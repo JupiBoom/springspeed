@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.payment.dao.ReconciliationRecordMapper">
+    
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.payment.model.ReconciliationRecord">
+        <id column="id" property="id"/>
+        <result column="reconciliation_date" property="reconciliationDate"/>
+        <result column="channel" property="channel"/>
+        <result column="channel_total_count" property="channelTotalCount"/>
+        <result column="channel_total_amount" property="channelTotalAmount"/>
+        <result column="system_total_count" property="systemTotalCount"/>
+        <result column="system_total_amount" property="systemTotalAmount"/>
+        <result column="diff_count" property="diffCount"/>
+        <result column="diff_amount" property="diffAmount"/>
+        <result column="status" property="status"/>
+        <result column="result_desc" property="resultDesc"/>
+        <result column="bill_file_path" property="billFilePath"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, reconciliation_date, channel, channel_total_count, channel_total_amount, 
+        system_total_count, system_total_amount, diff_count, diff_amount, status, 
+        result_desc, bill_file_path, create_time, update_time
+    </sql>
+    
+    <select id="selectByDateAndChannel" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM reconciliation_record
+        WHERE reconciliation_date = #{date}
+        AND channel = #{channel}
+    </select>
+    
+    <select id="selectPendingReconciliations" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM reconciliation_record
+        WHERE status = 0
+        ORDER BY reconciliation_date ASC
+    </select>
+    
+    <update id="updateReconciliationStatus">
+        UPDATE reconciliation_record
+        SET status = #{status},
+            result_desc = #{resultDesc},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM reconciliation_record
+        WHERE 1 = 1
+        <if test="channel != null">
+            AND channel = #{channel}
+        </if>
+        <if test="date != null">
+            AND reconciliation_date = #{date}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY reconciliation_date DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <insert id="insert" parameterType="com.yasinyuan.testspring.payment.model.ReconciliationRecord">
+        INSERT INTO reconciliation_record (
+            reconciliation_date, channel, channel_total_count, channel_total_amount, 
+            system_total_count, system_total_amount, diff_count, diff_amount, 
+            status, result_desc, bill_file_path, create_time, update_time
+        ) VALUES (
+            #{reconciliationDate}, #{channel}, #{channelTotalCount}, #{channelTotalAmount}, 
+            #{systemTotalCount}, #{systemTotalAmount}, #{diffCount}, #{diffAmount}, 
+            #{status}, #{resultDesc}, #{billFilePath}, NOW(), NOW()
+        )
+    </insert>
+    
+    <update id="updateByPrimaryKey" parameterType="com.yasinyuan.testspring.payment.model.ReconciliationRecord">
+        UPDATE reconciliation_record
+        SET reconciliation_date = #{reconciliationDate},
+            channel = #{channel},
+            channel_total_count = #{channelTotalCount},
+            channel_total_amount = #{channelTotalAmount},
+            system_total_count = #{systemTotalCount},
+            system_total_amount = #{systemTotalAmount},
+            diff_count = #{diffCount},
+            diff_amount = #{diffAmount},
+            status = #{status},
+            result_desc = #{resultDesc},
+            bill_file_path = #{billFilePath},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteByPrimaryKey" parameterType="Long">
+        DELETE FROM reconciliation_record WHERE id = #{id}
+    </delete>
+    
+    <select id="selectByPrimaryKey" parameterType="Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM reconciliation_record
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM reconciliation_record
+        ORDER BY create_time DESC
+    </select>
+</mapper>

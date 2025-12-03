@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.payment.dao.MerchantAccountMapper">
+    
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.payment.model.MerchantAccount">
+        <id column="id" property="id"/>
+        <result column="merchant_id" property="merchantId"/>
+        <result column="available_balance" property="availableBalance"/>
+        <result column="frozen_balance" property="frozenBalance"/>
+        <result column="total_income" property="totalIncome"/>
+        <result column="total_expense" property="totalExpense"/>
+        <result column="settlement_cycle" property="settlementCycle"/>
+        <result column="fee_rate" property="feeRate"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, merchant_id, available_balance, frozen_balance, total_income, 
+        total_expense, settlement_cycle, fee_rate, status, create_time, update_time
+    </sql>
+    
+    <select id="selectByMerchantId" parameterType="Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM merchant_account
+        WHERE merchant_id = #{merchantId}
+    </select>
+    
+    <update id="freezeAmount">
+        UPDATE merchant_account
+        SET available_balance = available_balance - #{amount},
+            frozen_balance = frozen_balance + #{amount},
+            update_time = NOW()
+        WHERE merchant_id = #{merchantId}
+        AND available_balance >= #{amount}
+    </update>
+    
+    <update id="unfreezeAmount">
+        UPDATE merchant_account
+        SET available_balance = available_balance + #{amount},
+            frozen_balance = frozen_balance - #{amount},
+            update_time = NOW()
+        WHERE merchant_id = #{merchantId}
+        AND frozen_balance >= #{amount}
+    </update>
+    
+    <update id="addBalance">
+        UPDATE merchant_account
+        SET available_balance = available_balance + #{amount},
+            total_income = total_income + #{amount},
+            update_time = NOW()
+        WHERE merchant_id = #{merchantId}
+    </update>
+    
+    <update id="deductBalance">
+        UPDATE merchant_account
+        SET available_balance = available_balance - #{amount},
+            total_expense = total_expense + #{amount},
+            update_time = NOW()
+        WHERE merchant_id = #{merchantId}
+        AND available_balance >= #{amount}
+    </update>
+    
+    <insert id="insert" parameterType="com.yasinyuan.testspring.payment.model.MerchantAccount">
+        INSERT INTO merchant_account (
+            merchant_id, available_balance, frozen_balance, total_income, 
+            total_expense, settlement_cycle, fee_rate, status, create_time, update_time
+        ) VALUES (
+            #{merchantId}, #{availableBalance}, #{frozenBalance}, #{totalIncome}, 
+            #{totalExpense}, #{settlementCycle}, #{feeRate}, #{status}, NOW(), NOW()
+        )
+    </insert>
+    
+    <update id="updateByPrimaryKey" parameterType="com.yasinyuan.testspring.payment.model.MerchantAccount">
+        UPDATE merchant_account
+        SET merchant_id = #{merchantId},
+            available_balance = #{availableBalance},
+            frozen_balance = #{frozenBalance},
+            total_income = #{totalIncome},
+            total_expense = #{totalExpense},
+            settlement_cycle = #{settlementCycle},
+            fee_rate = #{feeRate},
+            status = #{status},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteByPrimaryKey" parameterType="Long">
+        DELETE FROM merchant_account WHERE id = #{id}
+    </delete>
+    
+    <select id="selectByPrimaryKey" parameterType="Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM merchant_account
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM merchant_account
+        ORDER BY create_time DESC
+    </select>
+</mapper>
