@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.dao.PointsRecordMapper">
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.model.PointsRecord">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="member_id" property="memberId" jdbcType="BIGINT" />
+        <result column="points" property="points" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="TINYINT" />
+        <result column="business_type" property="businessType" jdbcType="TINYINT" />
+        <result column="business_id" property="businessId" jdbcType="BIGINT" />
+        <result column="expire_time" property="expireTime" jdbcType="TIMESTAMP" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member_id, points, type, business_type, business_id, expire_time, remark, create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByMemberIdAndType" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and type = #{type,jdbcType=TINYINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByMemberIdAndBusinessType" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and business_type = #{businessType,jdbcType=TINYINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where type = #{type,jdbcType=TINYINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByBusinessType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where business_type = #{businessType,jdbcType=TINYINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByBusinessId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where business_id = #{businessId,jdbcType=BIGINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByExpireTime" parameterType="java.util.Date" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        where expire_time <= #{expireTime,jdbcType=TIMESTAMP}
+        and type = 1
+        order by create_time desc
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_record
+        order by create_time desc
+    </select>
+
+    <insert id="insert" parameterType="com.yasinyuan.testspring.model.PointsRecord">
+        insert into points_record (member_id, points, type, business_type, business_id, expire_time, remark)
+        values (#{memberId,jdbcType=BIGINT}, #{points,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, #{businessType,jdbcType=TINYINT}, #{businessId,jdbcType=BIGINT}, #{expireTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.yasinyuan.testspring.model.PointsRecord">
+        insert into points_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">member_id,</if>
+            <if test="points != null">points,</if>
+            <if test="type != null">type,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">#{memberId,jdbcType=BIGINT},</if>
+            <if test="points != null">#{points,jdbcType=INTEGER},</if>
+            <if test="type != null">#{type,jdbcType=TINYINT},</if>
+            <if test="businessType != null">#{businessType,jdbcType=TINYINT},</if>
+            <if test="businessId != null">#{businessId,jdbcType=BIGINT},</if>
+            <if test="expireTime != null">#{expireTime,jdbcType=TIMESTAMP},</if>
+            <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from points_record
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByMemberId" parameterType="java.lang.Long">
+        delete from points_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByType" parameterType="java.lang.Integer">
+        delete from points_record
+        where type = #{type,jdbcType=TINYINT}
+    </delete>
+
+    <delete id="deleteByBusinessType" parameterType="java.lang.Integer">
+        delete from points_record
+        where business_type = #{businessType,jdbcType=TINYINT}
+    </delete>
+
+    <delete id="deleteByBusinessId" parameterType="java.lang.Long">
+        delete from points_record
+        where business_id = #{businessId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="countByMemberId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select count(*) from points_record where member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByType" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from points_record where type = #{type,jdbcType=TINYINT}
+    </select>
+
+    <select id="countByBusinessType" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from points_record where business_type = #{businessType,jdbcType=TINYINT}
+    </select>
+
+    <select id="countByBusinessId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select count(*) from points_record where business_id = #{businessId,jdbcType=BIGINT}
+    </select>
+
+    <select id="sumPointsByMemberIdAndType" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select sum(points) from points_record where member_id = #{memberId,jdbcType=BIGINT} and type = #{type,jdbcType=TINYINT}
+    </select>
+
+    <select id="sumPointsByMemberIdAndBusinessType" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select sum(points) from points_record where member_id = #{memberId,jdbcType=BIGINT} and business_type = #{businessType,jdbcType=TINYINT}
+    </select>
+
+    <select id="sumPointsByMemberIdAndBusinessTypeAndDate" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select sum(points) from points_record where member_id = #{memberId,jdbcType=BIGINT} and business_type = #{businessType,jdbcType=TINYINT} and date(create_time) = #{date,jdbcType=DATE}
+    </select>
+
+    <select id="sumPointsByMemberIdAndBusinessTypeAndMonth" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select sum(points) from points_record where member_id = #{memberId,jdbcType=BIGINT} and business_type = #{businessType,jdbcType=TINYINT} and year(create_time) = #{year,jdbcType=INTEGER} and month(create_time) = #{month,jdbcType=INTEGER}
+    </select>
+</mapper>

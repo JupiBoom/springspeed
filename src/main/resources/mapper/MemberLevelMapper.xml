@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.dao.MemberLevelMapper">
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.model.MemberLevel">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="min_growth_value" property="minGrowthValue" jdbcType="INTEGER" />
+        <result column="max_growth_value" property="maxGrowthValue" jdbcType="INTEGER" />
+        <result column="discount" property="discount" jdbcType="DECIMAL" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="TINYINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, min_growth_value, max_growth_value, discount, description, status, create_time, update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_level
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_level
+        where name = #{name,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_level
+    </select>
+
+    <select id="selectByStatus" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_level
+        where status = #{status,jdbcType=TINYINT}
+    </select>
+
+    <select id="selectByGrowthValue" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_level
+        where min_growth_value <= #{growthValue,jdbcType=INTEGER}
+        and (max_growth_value is null or max_growth_value >= #{growthValue,jdbcType=INTEGER})
+        order by min_growth_value desc
+        limit 1
+    </select>
+
+    <insert id="insert" parameterType="com.yasinyuan.testspring.model.MemberLevel">
+        insert into member_level (name, min_growth_value, max_growth_value, discount, description, status)
+        values (#{name,jdbcType=VARCHAR}, #{minGrowthValue,jdbcType=INTEGER}, #{maxGrowthValue,jdbcType=INTEGER}, #{discount,jdbcType=DECIMAL}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.yasinyuan.testspring.model.MemberLevel">
+        insert into member_level
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="minGrowthValue != null">min_growth_value,</if>
+            <if test="maxGrowthValue != null">max_growth_value,</if>
+            <if test="discount != null">discount,</if>
+            <if test="description != null">description,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+            <if test="minGrowthValue != null">#{minGrowthValue,jdbcType=INTEGER},</if>
+            <if test="maxGrowthValue != null">#{maxGrowthValue,jdbcType=INTEGER},</if>
+            <if test="discount != null">#{discount,jdbcType=DECIMAL},</if>
+            <if test="description != null">#{description,jdbcType=VARCHAR},</if>
+            <if test="status != null">#{status,jdbcType=TINYINT},</if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yasinyuan.testspring.model.MemberLevel">
+        update member_level
+        <set>
+            <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+            <if test="minGrowthValue != null">min_growth_value = #{minGrowthValue,jdbcType=INTEGER},</if>
+            <if test="maxGrowthValue != null">max_growth_value = #{maxGrowthValue,jdbcType=INTEGER},</if>
+            <if test="discount != null">discount = #{discount,jdbcType=DECIMAL},</if>
+            <if test="description != null">description = #{description,jdbcType=VARCHAR},</if>
+            <if test="status != null">status = #{status,jdbcType=TINYINT},</if>
+            update_time = CURRENT_TIMESTAMP,
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.yasinyuan.testspring.model.MemberLevel">
+        update member_level
+        set name = #{name,jdbcType=VARCHAR},
+            min_growth_value = #{minGrowthValue,jdbcType=INTEGER},
+            max_growth_value = #{maxGrowthValue,jdbcType=INTEGER},
+            discount = #{discount,jdbcType=DECIMAL},
+            description = #{description,jdbcType=VARCHAR},
+            status = #{status,jdbcType=TINYINT},
+            update_time = CURRENT_TIMESTAMP
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from member_level
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByName" parameterType="java.lang.String">
+        delete from member_level
+        where name = #{name,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteByStatus" parameterType="java.lang.Integer">
+        delete from member_level
+        where status = #{status,jdbcType=TINYINT}
+    </delete>
+
+    <select id="countByName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from member_level where name = #{name,jdbcType=VARCHAR}
+    </select>
+
+    <select id="countByStatus" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from member_level where status = #{status,jdbcType=TINYINT}
+    </select>
+</mapper>

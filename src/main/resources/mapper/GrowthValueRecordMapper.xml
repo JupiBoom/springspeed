@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.dao.GrowthValueRecordMapper">
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.model.GrowthValueRecord">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="member_id" property="memberId" jdbcType="BIGINT" />
+        <result column="growth_value" property="growthValue" jdbcType="INTEGER" />
+        <result column="business_type" property="businessType" jdbcType="TINYINT" />
+        <result column="business_id" property="businessId" jdbcType="BIGINT" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member_id, growth_value, business_type, business_id, remark, create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from growth_value_record
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from growth_value_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByMemberIdAndBusinessType" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from growth_value_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and business_type = #{businessType,jdbcType=TINYINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByBusinessType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from growth_value_record
+        where business_type = #{businessType,jdbcType=TINYINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectByBusinessId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from growth_value_record
+        where business_id = #{businessId,jdbcType=BIGINT}
+        order by create_time desc
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from growth_value_record
+        order by create_time desc
+    </select>
+
+    <insert id="insert" parameterType="com.yasinyuan.testspring.model.GrowthValueRecord">
+        insert into growth_value_record (member_id, growth_value, business_type, business_id, remark)
+        values (#{memberId,jdbcType=BIGINT}, #{growthValue,jdbcType=INTEGER}, #{businessType,jdbcType=TINYINT}, #{businessId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.yasinyuan.testspring.model.GrowthValueRecord">
+        insert into growth_value_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">member_id,</if>
+            <if test="growthValue != null">growth_value,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">#{memberId,jdbcType=BIGINT},</if>
+            <if test="growthValue != null">#{growthValue,jdbcType=INTEGER},</if>
+            <if test="businessType != null">#{businessType,jdbcType=TINYINT},</if>
+            <if test="businessId != null">#{businessId,jdbcType=BIGINT},</if>
+            <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from growth_value_record
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByMemberId" parameterType="java.lang.Long">
+        delete from growth_value_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByBusinessType" parameterType="java.lang.Integer">
+        delete from growth_value_record
+        where business_type = #{businessType,jdbcType=TINYINT}
+    </delete>
+
+    <delete id="deleteByBusinessId" parameterType="java.lang.Long">
+        delete from growth_value_record
+        where business_id = #{businessId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="countByMemberId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select count(*) from growth_value_record where member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByBusinessType" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from growth_value_record where business_type = #{businessType,jdbcType=TINYINT}
+    </select>
+
+    <select id="countByBusinessId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select count(*) from growth_value_record where business_id = #{businessId,jdbcType=BIGINT}
+    </select>
+</mapper>

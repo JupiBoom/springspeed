@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.dao.PointsAccountMapper">
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.model.PointsAccount">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="member_id" property="memberId" jdbcType="BIGINT" />
+        <result column="total_points" property="totalPoints" jdbcType="INTEGER" />
+        <result column="available_points" property="availablePoints" jdbcType="INTEGER" />
+        <result column="frozen_points" property="frozenPoints" jdbcType="INTEGER" />
+        <result column="expired_points" property="expiredPoints" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member_id, total_points, available_points, frozen_points, expired_points, create_time, update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_account
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_account
+        where member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from points_account
+    </select>
+
+    <insert id="insert" parameterType="com.yasinyuan.testspring.model.PointsAccount">
+        insert into points_account (member_id, total_points, available_points, frozen_points, expired_points)
+        values (#{memberId,jdbcType=BIGINT}, #{totalPoints,jdbcType=INTEGER}, #{availablePoints,jdbcType=INTEGER}, #{frozenPoints,jdbcType=INTEGER}, #{expiredPoints,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.yasinyuan.testspring.model.PointsAccount">
+        insert into points_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">member_id,</if>
+            <if test="totalPoints != null">total_points,</if>
+            <if test="availablePoints != null">available_points,</if>
+            <if test="frozenPoints != null">frozen_points,</if>
+            <if test="expiredPoints != null">expired_points,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">#{memberId,jdbcType=BIGINT},</if>
+            <if test="totalPoints != null">#{totalPoints,jdbcType=INTEGER},</if>
+            <if test="availablePoints != null">#{availablePoints,jdbcType=INTEGER},</if>
+            <if test="frozenPoints != null">#{frozenPoints,jdbcType=INTEGER},</if>
+            <if test="expiredPoints != null">#{expiredPoints,jdbcType=INTEGER},</if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yasinyuan.testspring.model.PointsAccount">
+        update points_account
+        <set>
+            <if test="memberId != null">member_id = #{memberId,jdbcType=BIGINT},</if>
+            <if test="totalPoints != null">total_points = #{totalPoints,jdbcType=INTEGER},</if>
+            <if test="availablePoints != null">available_points = #{availablePoints,jdbcType=INTEGER},</if>
+            <if test="frozenPoints != null">frozen_points = #{frozenPoints,jdbcType=INTEGER},</if>
+            <if test="expiredPoints != null">expired_points = #{expiredPoints,jdbcType=INTEGER},</if>
+            update_time = CURRENT_TIMESTAMP,
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.yasinyuan.testspring.model.PointsAccount">
+        update points_account
+        set member_id = #{memberId,jdbcType=BIGINT},
+            total_points = #{totalPoints,jdbcType=INTEGER},
+            available_points = #{availablePoints,jdbcType=INTEGER},
+            frozen_points = #{frozenPoints,jdbcType=INTEGER},
+            expired_points = #{expiredPoints,jdbcType=INTEGER},
+            update_time = CURRENT_TIMESTAMP
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="addPoints" parameterType="java.util.Map">
+        update points_account
+        set total_points = total_points + #{points,jdbcType=INTEGER},
+            available_points = available_points + #{points,jdbcType=INTEGER},
+            update_time = CURRENT_TIMESTAMP
+        where member_id = #{memberId,jdbcType=BIGINT}
+    </update>
+
+    <update id="deductPoints" parameterType="java.util.Map">
+        update points_account
+        set total_points = total_points - #{points,jdbcType=INTEGER},
+            available_points = available_points - #{points,jdbcType=INTEGER},
+            update_time = CURRENT_TIMESTAMP
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and available_points >= #{points,jdbcType=INTEGER}
+    </update>
+
+    <update id="freezePoints" parameterType="java.util.Map">
+        update points_account
+        set available_points = available_points - #{points,jdbcType=INTEGER},
+            frozen_points = frozen_points + #{points,jdbcType=INTEGER},
+            update_time = CURRENT_TIMESTAMP
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and available_points >= #{points,jdbcType=INTEGER}
+    </update>
+
+    <update id="unfreezePoints" parameterType="java.util.Map">
+        update points_account
+        set available_points = available_points + #{points,jdbcType=INTEGER},
+            frozen_points = frozen_points - #{points,jdbcType=INTEGER},
+            update_time = CURRENT_TIMESTAMP
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and frozen_points >= #{points,jdbcType=INTEGER}
+    </update>
+
+    <update id="expirePoints" parameterType="java.util.Map">
+        update points_account
+        set total_points = total_points - #{points,jdbcType=INTEGER},
+            available_points = available_points - #{points,jdbcType=INTEGER},
+            expired_points = expired_points + #{points,jdbcType=INTEGER},
+            update_time = CURRENT_TIMESTAMP
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and available_points >= #{points,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from points_account
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByMemberId" parameterType="java.lang.Long">
+        delete from points_account
+        where member_id = #{memberId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="countByMemberId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select count(*) from points_account where member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+</mapper>

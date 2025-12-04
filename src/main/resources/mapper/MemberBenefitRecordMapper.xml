@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yasinyuan.testspring.dao.MemberBenefitRecordMapper">
+    <resultMap id="BaseResultMap" type="com.yasinyuan.testspring.model.MemberBenefitRecord">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="member_id" property="memberId" jdbcType="BIGINT" />
+        <result column="benefit_type" property="benefitType" jdbcType="TINYINT" />
+        <result column="benefit_value" property="benefitValue" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="TINYINT" />
+        <result column="expire_time" property="expireTime" jdbcType="TIMESTAMP" />
+        <result column="issue_time" property="issueTime" jdbcType="TIMESTAMP" />
+        <result column="use_time" property="useTime" jdbcType="TIMESTAMP" />
+        <result column="reason" property="reason" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member_id, benefit_type, benefit_value, status, expire_time, issue_time, use_time, reason, create_time, update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        order by issue_time desc
+    </select>
+
+    <select id="selectByMemberIdAndBenefitType" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and benefit_type = #{benefitType,jdbcType=TINYINT}
+        order by issue_time desc
+    </select>
+
+    <select id="selectByMemberIdAndStatus" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+        and status = #{status,jdbcType=TINYINT}
+        order by issue_time desc
+    </select>
+
+    <select id="selectByBenefitType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        where benefit_type = #{benefitType,jdbcType=TINYINT}
+        order by issue_time desc
+    </select>
+
+    <select id="selectByStatus" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        where status = #{status,jdbcType=TINYINT}
+        order by issue_time desc
+    </select>
+
+    <select id="selectByExpireTime" parameterType="java.util.Date" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        where expire_time <= #{expireTime,jdbcType=TIMESTAMP}
+        and status = 1
+        order by expire_time desc
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from member_benefit_record
+        order by issue_time desc
+    </select>
+
+    <insert id="insert" parameterType="com.yasinyuan.testspring.model.MemberBenefitRecord">
+        insert into member_benefit_record (member_id, benefit_type, benefit_value, status, expire_time, issue_time, reason)
+        values (#{memberId,jdbcType=BIGINT}, #{benefitType,jdbcType=TINYINT}, #{benefitValue,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{expireTime,jdbcType=TIMESTAMP}, #{issueTime,jdbcType=TIMESTAMP}, #{reason,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.yasinyuan.testspring.model.MemberBenefitRecord">
+        insert into member_benefit_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">member_id,</if>
+            <if test="benefitType != null">benefit_type,</if>
+            <if test="benefitValue != null">benefit_value,</if>
+            <if test="status != null">status,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="issueTime != null">issue_time,</if>
+            <if test="reason != null">reason,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">#{memberId,jdbcType=BIGINT},</if>
+            <if test="benefitType != null">#{benefitType,jdbcType=TINYINT},</if>
+            <if test="benefitValue != null">#{benefitValue,jdbcType=VARCHAR},</if>
+            <if test="status != null">#{status,jdbcType=TINYINT},</if>
+            <if test="expireTime != null">#{expireTime,jdbcType=TIMESTAMP},</if>
+            <if test="issueTime != null">#{issueTime,jdbcType=TIMESTAMP},</if>
+            <if test="reason != null">#{reason,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yasinyuan.testspring.model.MemberBenefitRecord">
+        update member_benefit_record
+        <set>
+            <if test="memberId != null">member_id = #{memberId,jdbcType=BIGINT},</if>
+            <if test="benefitType != null">benefit_type = #{benefitType,jdbcType=TINYINT},</if>
+            <if test="benefitValue != null">benefit_value = #{benefitValue,jdbcType=VARCHAR},</if>
+            <if test="status != null">status = #{status,jdbcType=TINYINT},</if>
+            <if test="expireTime != null">expire_time = #{expireTime,jdbcType=TIMESTAMP},</if>
+            <if test="issueTime != null">issue_time = #{issueTime,jdbcType=TIMESTAMP},</if>
+            <if test="useTime != null">use_time = #{useTime,jdbcType=TIMESTAMP},</if>
+            <if test="reason != null">reason = #{reason,jdbcType=VARCHAR},</if>
+            update_time = CURRENT_TIMESTAMP,
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.yasinyuan.testspring.model.MemberBenefitRecord">
+        update member_benefit_record
+        set member_id = #{memberId,jdbcType=BIGINT},
+            benefit_type = #{benefitType,jdbcType=TINYINT},
+            benefit_value = #{benefitValue,jdbcType=VARCHAR},
+            status = #{status,jdbcType=TINYINT},
+            expire_time = #{expireTime,jdbcType=TIMESTAMP},
+            issue_time = #{issueTime,jdbcType=TIMESTAMP},
+            use_time = #{useTime,jdbcType=TIMESTAMP},
+            reason = #{reason,jdbcType=VARCHAR},
+            update_time = CURRENT_TIMESTAMP
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="useBenefit" parameterType="java.lang.Long">
+        update member_benefit_record
+        set status = 2,
+            use_time = CURRENT_TIMESTAMP,
+            update_time = CURRENT_TIMESTAMP
+        where id = #{id,jdbcType=BIGINT}
+        and status = 1
+    </update>
+
+    <update id="expireBenefit" parameterType="java.lang.Long">
+        update member_benefit_record
+        set status = 3,
+            update_time = CURRENT_TIMESTAMP
+        where id = #{id,jdbcType=BIGINT}
+        and status = 1
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from member_benefit_record
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByMemberId" parameterType="java.lang.Long">
+        delete from member_benefit_record
+        where member_id = #{memberId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByBenefitType" parameterType="java.lang.Integer">
+        delete from member_benefit_record
+        where benefit_type = #{benefitType,jdbcType=TINYINT}
+    </delete>
+
+    <delete id="deleteByStatus" parameterType="java.lang.Integer">
+        delete from member_benefit_record
+        where status = #{status,jdbcType=TINYINT}
+    </delete>
+
+    <select id="countByMemberId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select count(*) from member_benefit_record where member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByBenefitType" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from member_benefit_record where benefit_type = #{benefitType,jdbcType=TINYINT}
+    </select>
+
+    <select id="countByStatus" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from member_benefit_record where status = #{status,jdbcType=TINYINT}
+    </select>
+</mapper>
